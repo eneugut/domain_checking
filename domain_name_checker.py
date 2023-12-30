@@ -48,6 +48,7 @@ def generate_domain_names(min_length, max_length, max_domains, allow_numbers=Tru
 def check_domain_availability(domain):
     try:
         domain_info = whois.whois(domain)
+        print(domain_info)
         return False
     except:
         print('Available: {}'.format(domain))
