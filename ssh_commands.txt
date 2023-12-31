@@ -1,6 +1,9 @@
-python3 domain_run.py --min_length 4 --max_length 4 --max_domains 1000 --domain_ending .com --allow_numbers --allow_hyphen --require_hyphen_or_number
+git clone https://github.com/eneugut/domain_checking.git
 
-aws s3 sync domain_names s3://domaincheckeren/
+python3 domain_run.py --min_length 4 --max_length 4 --max_domains 1000 --domain_ending .com --allow_numbers --allow_hyphen --require_hyphen_or_number --starting_domain "b2q0.com"
+
+aws s3 sync ./Desktop/domain_names s3://domaincheckeren/
+rm -rf ./Desktop/domain_names/
 
 aws s3 ls s3://domaincheckeren/ --recursive | wc -l
 

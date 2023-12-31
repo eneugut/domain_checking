@@ -1,7 +1,7 @@
 from domain_name_checker import *
 import time
 import argparse
-
+from move_folders import *
 
 def main(args):
     domains = generate_domain_names(
@@ -12,7 +12,8 @@ def main(args):
         allow_numbers=args.allow_numbers,
         allow_hyphen=args.allow_hyphen,
         allow_fada=args.allow_fada,
-        require_hyphen_or_number=args.require_hyphen_or_number
+        require_hyphen_or_number=args.require_hyphen_or_number,
+        starting_domain=args.starting_domain
     )
 
     # Check the availability of each domain name. Print a statement every 50 domains to show progress.
@@ -25,9 +26,15 @@ def main(args):
     batch_size = args.batch_size
     available_domains = []
     batch_num = 1
+    if args.starting_domain is not None:
+        for i in range(0, len(domains)):
+            if domains[i] == args.starting_domain:
+                domains = domains[i:]
+                break
+        print('Starting domain: {}'.format(domains[0]))
 
     for i in range(0, len(domains)):
-        
+
         available = check_domain_availability(domains[i])
         if available:
             available_domains.append([domains[i]])
@@ -39,6 +46,13 @@ def main(args):
             available_domains = []
         if (i + 1) % 50 == 0:
             print('Checked {} domains...'.format(i + 1))
+        if batch_num > 30:
+            sync_with_s3()
+            time.sleep(5)
+            remove_local_directory()
+            time.sleep(5)
+            batch_num = 1
+            print('Synced with S3 and removed local directory.')
 
     # Deal with any remaining domains
     if len(available_domains) > 0:
@@ -60,6 +74,7 @@ if __name__ == '__main__':
     parser.add_argument('--allow_hyphen', type=bool, default=True, help='Allow hyphens in domain names')
     parser.add_argument('--allow_fada', type=bool, default=False, help='Allow fadas in domain names')
     parser.add_argument('--require_hyphen_or_number', type=bool, default=True, help='Require hyphen or number in domain names')
+    parser.add_argument('--starting_domain', type=str, default=None, help='Starting domain name')
 
     args = parser.parse_args()
     main(args)
