@@ -40,6 +40,14 @@ def main(args):
         if (i + 1) % 50 == 0:
             print('Checked {} domains...'.format(i + 1))
 
+    # Deal with any remaining domains
+    if len(available_domains) > 0:
+        file_name = 'batch_{}.csv'.format(batch_num)
+        write_to_csv(folder_name='domain_names', file_name=file_name, data=available_domains)
+
+    # Stop timer
+    end = time.time()
+    print('Time taken: {} seconds'.format(end - start))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate and check domain names.')

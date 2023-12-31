@@ -1,0 +1,18 @@
+python3 domain_run.py --min_length 4 --max_length 4 --max_domains 1000 --domain_ending .com --allow_numbers --allow_hyphen --require_hyphen_or_number
+
+aws s3 sync domain_names s3://domaincheckeren/
+
+aws s3 ls s3://domaincheckeren/ --recursive | wc -l
+
+
+wget https://raw.githubusercontent.com/eneugut/domain_checking/main/domain_print.py
+wget https://raw.githubusercontent.com/eneugut/domain_checking/main/domain_name_checker.py
+wget https://raw.githubusercontent.com/eneugut/domain_checking/main/domain_run2.py
+
+
+
+ssh -i C:\Users\User\DomainChecking.pem ec2-user@15.207.16.178
+
+nohup python3 domain_run2.py > output.log 2>&1 &
+
+kill 68061
