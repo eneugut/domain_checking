@@ -12,8 +12,7 @@ def main(args):
         allow_numbers=args.allow_numbers,
         allow_hyphen=args.allow_hyphen,
         allow_fada=args.allow_fada,
-        require_hyphen_or_number=args.require_hyphen_or_number,
-        starting_domain=args.starting_domain
+        require_hyphen_or_number=args.require_hyphen_or_number
     )
 
     # Check the availability of each domain name. Print a statement every 50 domains to show progress.
