@@ -48,12 +48,30 @@ def generate_domain_names(min_length, max_length, max_domains, allow_numbers=Tru
 def check_domain_availability(domain):
     try:
         domain_info = whois.whois(domain)
-        print(domain_info)
         return False
     except:
         print('Available: {}'.format(domain))
         return True
 
+def write_to_csv(folder_name, file_name, data):
+    # Setting up the directory on the desktop
+    desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')  # Path to the desktop
+    folder_path = os.path.join(desktop_path, folder_name)
+
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # File path and naming
+    file_path = os.path.join(folder_path, file_name)
+
+    # Writing data to CSV file
+    with open(file_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        # writer.writerow(['Domain'])  # Header
+        writer.writerows(data)
+
+    print('Wrote {} domains to {}.'.format(len(data), file_name))
 
 # Function that writes the list of domains that are available to CSV files
 def write_to_csvs(folder_name,file_name, data, batch_size):
@@ -89,3 +107,17 @@ def write_to_csvs(folder_name,file_name, data, batch_size):
             writer.writerows(batch)
  
 
+# Function that takes a list of domains, checks them, takes the ones that are available and writes them to one csv file
+def check_and_write_to_csv(domain_list, file_name):
+    available_domains = []
+    for i, domain in enumerate(domain_list):
+        if check_domain_availability(domain):
+            available_domains.append([domain])
+        if (i + 1) % 50 == 0:
+            print('Checked {} domains...'.format(i + 1))
+
+        # Write the available domains to a CSV file
+    with open(file_name, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerow(['Available Domains'])
+        csv_writer.writerows(available_domains)
